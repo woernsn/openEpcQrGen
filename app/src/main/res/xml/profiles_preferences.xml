@@ -1,0 +1,69 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <PreferenceCategory android:title="Profile 1" app:iconSpaceReserved="false">
+        <EditTextPreference
+            app:key="profile1_name"
+            app:title="Account Name"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="profile1_iban"
+            app:title="Account IBAN"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="profile1_bic"
+            app:title="Account BIC"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Profile 2" app:iconSpaceReserved="false">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="profile2_enabled"
+            android:title="Enable"
+            app:iconSpaceReserved="false" />
+        <EditTextPreference
+            app:key="profile2_name"
+            app:title="Account Name"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="profile2_iban"
+            app:title="Account IBAN"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="profile2_bic"
+            app:title="Account BIC"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Profile 3" app:iconSpaceReserved="false">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="profile3_enabled"
+            android:title="Enable"
+            app:iconSpaceReserved="false" />
+        <EditTextPreference
+            app:key="profile3_name"
+            app:title="Account Name"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="profile3_iban"
+            app:title="Account IBAN"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="profile3_bic"
+            app:title="Account BIC"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
