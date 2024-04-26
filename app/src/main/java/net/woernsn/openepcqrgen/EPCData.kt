@@ -5,7 +5,7 @@ class EPCData(
     private val version: Version = Version.VERSION_002,
     private val characterSet: CharacterSet = CharacterSet.UTF_8,
     private val identification: Identification = Identification.SCT,
-    private val bic: String? = "",
+    private val bic: String = "",
     private val name: String,
     private val iban: String,
     private val currency: String = "EUR",
@@ -16,12 +16,16 @@ class EPCData(
     private val information: String? ="",
 ) {
     init {
-        if (version == Version.VERSION_001 && bic.isNullOrEmpty()) {
+        if (version == Version.VERSION_001 && bic.isEmpty()) {
             throw Exception("In version 001, the BIC is mandatory!")
         }
 
         if (name.length > 70) {
             throw Exception("Name must be maximum 70 chars!")
+        }
+
+        if (iban.replace(" ", "").length < 16) {
+            throw Exception("IBAN must be minimum 16 chars!")
         }
 
         if (!(0.01..999999999.99).contains(amount)) {

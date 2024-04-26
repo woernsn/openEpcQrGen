@@ -5,17 +5,17 @@
     <PreferenceCategory android:title="Profile 1" app:iconSpaceReserved="false">
         <EditTextPreference
             app:key="profile1_name"
-            app:title="Account Name"
+            app:title="@string/account_name"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:key="profile1_iban"
-            app:title="Account IBAN"
+            app:title="@string/account_iban"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:key="profile1_bic"
-            app:title="Account BIC"
+            app:title="@string/account_bic"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
@@ -24,21 +24,21 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="profile2_enabled"
-            android:title="Enable"
+            android:title="@string/enable"
             app:iconSpaceReserved="false" />
         <EditTextPreference
             app:key="profile2_name"
-            app:title="Account Name"
+            app:title="@string/account_name"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:key="profile2_iban"
-            app:title="Account IBAN"
+            app:title="@string/account_iban"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:key="profile2_bic"
-            app:title="Account BIC"
+            app:title="@string/account_bic"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
@@ -47,21 +47,21 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="profile3_enabled"
-            android:title="Enable"
+            android:title="@string/enable"
             app:iconSpaceReserved="false" />
         <EditTextPreference
             app:key="profile3_name"
-            app:title="Account Name"
+            app:title="@string/account_name"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:key="profile3_iban"
-            app:title="Account IBAN"
+            app:title="@string/account_iban"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:key="profile3_bic"
-            app:title="Account BIC"
+            app:title="@string/account_bic"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>

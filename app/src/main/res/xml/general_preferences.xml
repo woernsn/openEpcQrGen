@@ -2,7 +2,7 @@
 
     <ListPreference
         app:key="theme"
-        app:title="Theme"
+        app:title="@string/theme"
         app:entries="@array/pref_theme_labels"
         app:entryValues="@array/pref_theme_values"
         app:iconSpaceReserved="false"

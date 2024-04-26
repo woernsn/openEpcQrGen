@@ -1,33 +1,24 @@
 package net.woernsn.openepcqrgen
 
-import android.app.Activity
-import android.app.UiModeManager
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.opengl.Visibility
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.AppCompatEditText
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.widget.addTextChangedListener
-import androidx.preference.PreferenceFragmentCompat
+import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.DynamicColors
@@ -36,7 +27,7 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import kotlin.concurrent.thread
 
-class GenerateActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
+class GenerateActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -67,11 +58,10 @@ class GenerateActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
         // default prefs
         PreferenceManager.setDefaultValues(this, R.xml.general_preferences, false)
-        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this)
-
-        // debug
-        val mytheme = PreferenceManager.getDefaultSharedPreferences(this)
-        println(mytheme.getString("theme", "none"))
+        PreferenceManager.setDefaultValues(this, R.xml.profiles_preferences, false)
+        PreferenceManager.getDefaultSharedPreferences(this).edit {
+            putBoolean("profile1_enabled", true)
+        }
 
         // add toolbar
         val toolbar = findViewById<MaterialToolbar>(R.id.materialToolBar)
@@ -87,8 +77,16 @@ class GenerateActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         val imageViewQrCode = findViewById<ImageView>(R.id.imageViewQrCode)
         imageViewQrCode.visibility = View.INVISIBLE
 
+        val noProfileMessage = findViewById<TextView>(R.id.noProfileMessage)
+        noProfileMessage.visibility = View.INVISIBLE
+
         val textInput = findViewById<TextInputLayout>(R.id.textInput)
         val amountInput = findViewById<TextInputLayout>(R.id.amountInput)
+        val profileRadioGroup = findViewById<RadioGroup>(R.id.radioGroup).setOnCheckedChangeListener { _, _ ->
+            imageViewQrCode.visibility = View.INVISIBLE
+            textInput.editText!!.text.clear()
+            amountInput.editText!!.text.clear()
+        }
 
         val view = findViewById<View>(R.id.main)
 
@@ -110,24 +108,29 @@ class GenerateActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
                 imageViewQrCode.visibility = View.VISIBLE
 
+                val activeProfile = getActiveProfile()
+                val defaultPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+
+                val name = defaultPreferences.getString("profile${activeProfile}_name", null)
+                val iban = defaultPreferences.getString("profile${activeProfile}_iban", null)
+                val bic = defaultPreferences.getString("profile${activeProfile}_bic", "")
                 val amount = amountInput.editText!!.text.toString().toDouble()
                 val text = textInput.editText!!.text.toString()
 
                 val epcData = EPCData(
                     amount = amount,
                     text = text,
-                    iban = "AT52 1919 0000 5505 0363",
-                    name = "Werner Kapferer"
+                    name = name!!,
+                    iban = iban!!,
+                    bic = bic!!
                 )
 
                 thread {
-
                     view.post {
                         imageViewQrCode.setImageBitmap(
                             generateQrCode(epcData, imageViewQrCode.width, imageViewQrCode.height, themeAccentColor)
                         )
                     }
-
                 }
             }
 
@@ -135,6 +138,82 @@ class GenerateActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
         textInput.editText?.addTextChangedListener(textWatcher)
         amountInput.editText?.addTextChangedListener(textWatcher)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkForValidProfile()
+        setRadioButtonNames()
+    }
+
+    private fun setRadioButtonNames() {
+        val defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val profileButtons = arrayOf<RadioButton>(
+            findViewById(R.id.radio_profile1),
+            findViewById(R.id.radio_profile2),
+            findViewById(R.id.radio_profile3),
+        )
+
+        val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
+        val defaultProfileButton = profileButtons[0]
+
+        for (profileNumber in 1 .. 3) {
+            val profileButton = profileButtons[profileNumber-1]
+
+            val name = defaultPreferences.getString("profile${profileNumber}_name", null)
+            val isEnabled = defaultPreferences.getBoolean("profile${profileNumber}_enabled", false)
+
+            // check if profile is enabled and profile name is set
+            if (isEnabled && !name.isNullOrEmpty()) {
+                profileButton.text = name
+                profileButton.isVisible = true
+            } else {
+                // check if this one was used before being invalid
+                if (profileButton.isChecked) {
+                    defaultProfileButton.isChecked = true
+                }
+
+                profileButton.isVisible = false
+            }
+        }
+    }
+
+    private fun checkForValidProfile(): Boolean {
+        val defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val noProfileMessage = findViewById<TextView>(R.id.noProfileMessage)
+        val textInput = findViewById<TextInputLayout>(R.id.textInput)
+        val amountInput = findViewById<TextInputLayout>(R.id.amountInput)
+
+        try {
+            EPCData(
+                name = defaultPreferences.getString("profile1_name", null)!!,
+                iban = defaultPreferences.getString("profile1_iban", null)!!,
+                bic = defaultPreferences.getString("profile1_bic", "")!!,
+                text = "init",
+                amount = 1.0
+            )
+
+            noProfileMessage.visibility = View.INVISIBLE
+            textInput.isEnabled = true
+            amountInput.isEnabled = true
+
+            return true
+        } catch (e: Exception) {
+            noProfileMessage.visibility = View.VISIBLE
+            textInput.isEnabled = false
+            amountInput.isEnabled = false
+
+            return false
+        }
+    }
+
+    private fun getActiveProfile(): Number {
+        val profileButtons = arrayOf<RadioButton>(
+            findViewById(R.id.radio_profile1),
+            findViewById(R.id.radio_profile2),
+            findViewById(R.id.radio_profile3),
+        )
+        return profileButtons.indexOfFirst { it.isChecked } + 1
     }
 
     private fun generateQrCode(epcData: EPCData, width: Int, height: Int, themeAccentColor: Int): Bitmap {
@@ -154,16 +233,5 @@ class GenerateActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         bitmap.setPixels(pixels, 0, w, 0, 0, w, h)
 
         return bitmap
-    }
-
-    override fun onSharedPreferenceChanged(p0: SharedPreferences?, p1: String?) {
-        // set theme
-        if (p1 == "theme") {
-            val man = AppCompatDelegate.setDefaultNightMode(when (p0!!.getString("theme", "auto")) {
-                "light" -> AppCompatDelegate.MODE_NIGHT_NO
-                "dark" -> AppCompatDelegate.MODE_NIGHT_YES
-                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            })
-        }
     }
 }

@@ -1,15 +1,15 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:fragment="net.woernsn.openepcqrgen.SettingsActivity$MessagesFragment"
+        app:fragment="net.woernsn.openepcqrgen.SettingsActivity$ProfilesFragment"
         app:iconSpaceReserved="false"
         app:key="profiles_header"
-        app:title="Profiles" />
+        app:title="@string/profiles" />
 
     <Preference
-        app:fragment="net.woernsn.openepcqrgen.SettingsActivity$SyncFragment"
+        app:fragment="net.woernsn.openepcqrgen.SettingsActivity$GeneralFragment"
         app:iconSpaceReserved="false"
         app:key="general_header"
-        app:title="General" />
+        app:title="@string/general" />
 
 </PreferenceScreen>

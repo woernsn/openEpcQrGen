@@ -2,13 +2,9 @@
     <string name="app_name">openEpcQrGen</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="system_default">System default</string>
 
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
@@ -16,4 +12,19 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="profile_1">Profile 1</string>
+    <string name="profile_2">Profile 2</string>
+    <string name="profile_3">Profile 3</string>
+    <string name="text">Text</string>
+    <string name="amount">Amount</string>
+    <string name="at_least_one_profile_has_to_be_setup_in_the_settings">At least one profile has to be setup in the settings!</string>
+    <string name="epc_qr_code">EPC QR code</string>
+    <string name="settings">Settings</string>
+    <string name="profiles">Profiles</string>
+    <string name="general">General</string>
+    <string name="account_name">Account Name *</string>
+    <string name="account_iban">Account IBAN *</string>
+    <string name="account_bic">Account BIC</string>
+    <string name="enable">Enable</string>
+    <string name="theme">Theme</string>
 </resources>

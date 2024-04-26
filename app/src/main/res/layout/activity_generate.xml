@@ -9,14 +9,14 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.Material3">
+        android:layout_height="wrap_content">
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/materialToolBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,44 +31,73 @@
         app:layout_constraintTop_toBottomOf="@+id/materialToolBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:checkedButton="@+id/radio_profile1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/radio_profile1"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="@string/profile_1" />
+
+            <RadioButton
+                android:id="@+id/radio_profile2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="@string/profile_2" />
+
+            <RadioButton
+                android:id="@+id/radio_profile3"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="@string/profile_3" />
+        </RadioGroup>
 
         <ImageView
             android:id="@+id/imageViewQrCode"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginTop="16dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/amountInput"
-            app:srcCompat="@drawable/baseline_qr_code_2_24" />
+            app:srcCompat="@drawable/baseline_qr_code_2_24"
+            android:contentDescription="@string/epc_qr_code" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInput"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="128dp"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
             app:counterEnabled="true"
             app:counterMaxLength="140"
             app:counterTextColor="@color/md_theme_secondary_mediumContrast"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="start"
-                android:hint="Text"
+                android:hint="@string/text"
                 android:inputType="textMultiLine"
                 android:lines="5"
                 android:maxLength="140"
@@ -81,9 +110,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInput">
@@ -91,8 +118,19 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:hint="Amount"
+                android:hint="@string/amount"
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/noProfileMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/at_least_one_profile_has_to_be_setup_in_the_settings"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewQrCode"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewQrCode"
+            app:layout_constraintStart_toStartOf="@+id/imageViewQrCode"
+            app:layout_constraintTop_toTopOf="@+id/imageViewQrCode" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,23 +1,16 @@
 package net.woernsn.openepcqrgen
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.res.Configuration
-import android.os. Bundle
-import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
+import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.widget.doAfterTextChanged
 import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
 import androidx.preference.Preference
+import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
-import androidx.preference.PreferenceScreen
-import androidx.recyclerview.widget.RecyclerView
+import androidx.preference.SwitchPreference
 import com.google.android.material.color.DynamicColors
 
 private const val TITLE_TAG = "settingsActivityTitle"
@@ -42,6 +35,7 @@ class SettingsActivity : AppCompatActivity(),
                 setTitle(R.string.title_activity_settings)
             }
         }
+        setSupportActionBar(findViewById(R.id.materialToolBar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -52,10 +46,9 @@ class SettingsActivity : AppCompatActivity(),
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        if (supportFragmentManager.popBackStackImmediate()) {
-            return true
-        }
-        return super.onSupportNavigateUp()
+        onBackPressedDispatcher.onBackPressed()
+
+        return true
     }
 
     override fun onPreferenceStartFragment(
@@ -81,89 +74,97 @@ class SettingsActivity : AppCompatActivity(),
         return true
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-    }
-
     class HeaderFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.header_preferences, rootKey)
         }
     }
 
-    class ProfilesFragment : PreferenceFragmentCompat() {
-
-        override fun onNavigateToScreen(preferenceScreen: PreferenceScreen) {
-            super.onNavigateToScreen(preferenceScreen)
-        }
-
-        override fun onPreferenceTreeClick(preference: Preference): Boolean {
-            return super.onPreferenceTreeClick(preference)
-        }
-
-        override fun onPrimaryNavigationFragmentChanged(isPrimaryNavigationFragment: Boolean) {
-            super.onPrimaryNavigationFragmentChanged(isPrimaryNavigationFragment)
-        }
-
-        override fun onAttach(context: Context) {
-            super.onAttach(context)
-        }
-
-        override fun onInflate(context: Context, attrs: AttributeSet, savedInstanceState: Bundle?) {
-            super.onInflate(context, attrs, savedInstanceState)
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-        }
-
+    class ProfilesFragment : PreferenceFragmentCompat(), OnPreferenceChangeListener {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.profiles_preferences, rootKey)
 
             // check for enabled profiles
             for (profileNumber in 2..3) {
-                val isEnabled = preferenceManager.sharedPreferences!!.getBoolean("profile${profileNumber}_enabled", false)
-                arrayOf("name", "iban").forEach { setting ->
-                    val pref = findPreference<EditTextPreference>("profile${profileNumber}_${setting}")
-                    pref?.isEnabled = isEnabled
-                }
+                val isEnabled = preferenceManager.sharedPreferences!!.getBoolean(
+                    "profile${profileNumber}_enabled",
+                    false
+                )
+                enableProfile(this, profileNumber, isEnabled)
+
+                findPreference<SwitchPreference>("profile${profileNumber}_enabled")!!
+                    .onPreferenceChangeListener = this
             }
 
-            setPreferencesFromResource(R.xml.profiles_preferences, rootKey)
+            // set onPreferenceChangeListeners
+            for (profileNumber in 1..3) {
+                findPreference<EditTextPreference>("profile${profileNumber}_iban")!!
+                    .setOnBindEditTextListener { editText ->
+                        editText.doAfterTextChanged {
+                            val okBtn = editText.rootView.findViewById<Button>(android.R.id.button1)
+                            try {
+                                EPCData(
+                                    name = "",
+                                    iban = editText.text.toString(),
+                                    text = "validate",
+                                    amount = 1.0
+                                )
 
+                                // enable okay button
+                                okBtn.isEnabled = true
+                            } catch (e: Exception) {
+                                editText.error = e.message
+                                okBtn.isEnabled = false
+                            }
+                        }
+                    }
+            }
         }
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
+        override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
+            val profileRegex = """profile(\d)_enabled""".toRegex()
+            val profileResult = profileRegex.find(preference.key)
+
+            if (profileResult != null) {
+                val profileNumber = profileResult.groups[1]!!.value.toInt()
+                enableProfile(this@ProfilesFragment, profileNumber, newValue as Boolean)
+            }
+
+            return true
         }
 
-        override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-            super.onCreateOptionsMenu(menu, inflater)
-        }
-
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View {
-            return super.onCreateView(inflater, container, savedInstanceState)
-        }
-
-        override fun onCreateLayoutManager(): RecyclerView.LayoutManager {
-            return super.onCreateLayoutManager()
-        }
-
-        override fun onCreateRecyclerView(
-            inflater: LayoutInflater,
-            parent: ViewGroup,
-            savedInstanceState: Bundle?
-        ): RecyclerView {
-            return super.onCreateRecyclerView(inflater, parent, savedInstanceState)
+        private fun enableProfile(
+            context: PreferenceFragmentCompat,
+            profileNumber: Number,
+            enable: Boolean
+        ) {
+            arrayOf("name", "iban", "bic").forEach { setting ->
+                val pref =
+                    context.findPreference<EditTextPreference>("profile${profileNumber}_${setting}")
+                pref?.isEnabled = enable
+            }
         }
     }
 
-    class GeneralFragment : PreferenceFragmentCompat() {
+
+    class GeneralFragment : PreferenceFragmentCompat(), OnPreferenceChangeListener {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.general_preferences, rootKey)
+            findPreference<ListPreference>("theme")!!.onPreferenceChangeListener = this
+        }
+
+        override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
+            if (preference.key == "theme") {
+                AppCompatDelegate.setDefaultNightMode(
+                    when ((newValue as String)) {
+                        "light" -> AppCompatDelegate.MODE_NIGHT_NO
+                        "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                        else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    }
+                )
+            }
+
+            return true
         }
     }
 }
