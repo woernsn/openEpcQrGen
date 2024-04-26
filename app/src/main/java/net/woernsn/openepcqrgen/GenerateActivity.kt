@@ -111,7 +111,7 @@ class GenerateActivity : AppCompatActivity() {
                 val activeProfile = getActiveProfile()
                 val defaultPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
-                val name = defaultPreferences.getString("profile${activeProfile}_name", null)
+                val holder = defaultPreferences.getString("profile${activeProfile}_holder", null)
                 val iban = defaultPreferences.getString("profile${activeProfile}_iban", null)
                 val bic = defaultPreferences.getString("profile${activeProfile}_bic", "")
                 val amount = amountInput.editText!!.text.toString().toDouble()
@@ -120,7 +120,7 @@ class GenerateActivity : AppCompatActivity() {
                 val epcData = EPCData(
                     amount = amount,
                     text = text,
-                    name = name!!,
+                    name = holder!!,
                     iban = iban!!,
                     bic = bic!!
                 )
@@ -185,7 +185,7 @@ class GenerateActivity : AppCompatActivity() {
 
         try {
             EPCData(
-                name = defaultPreferences.getString("profile1_name", null)!!,
+                name = defaultPreferences.getString("profile1_holder", null)!!,
                 iban = defaultPreferences.getString("profile1_iban", null)!!,
                 bic = defaultPreferences.getString("profile1_bic", "")!!,
                 text = "init",

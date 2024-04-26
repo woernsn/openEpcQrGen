@@ -138,7 +138,7 @@ class SettingsActivity : AppCompatActivity(),
             profileNumber: Number,
             enable: Boolean
         ) {
-            arrayOf("name", "iban", "bic").forEach { setting ->
+            arrayOf("name", "holder", "iban", "bic").forEach { setting ->
                 val pref =
                     context.findPreference<EditTextPreference>("profile${profileNumber}_${setting}")
                 pref?.isEnabled = enable

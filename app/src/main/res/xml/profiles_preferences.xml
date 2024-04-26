@@ -5,7 +5,13 @@
     <PreferenceCategory android:title="Profile 1" app:iconSpaceReserved="false">
         <EditTextPreference
             app:key="profile1_name"
-            app:title="@string/account_name"
+            app:defaultValue="@string/profile_1"
+            app:title="@string/profile_name"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="profile1_holder"
+            app:title="@string/account_holder"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -28,7 +34,13 @@
             app:iconSpaceReserved="false" />
         <EditTextPreference
             app:key="profile2_name"
-            app:title="@string/account_name"
+            app:defaultValue="@string/profile_2"
+            app:title="@string/profile_name"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="profile2_holder"
+            app:title="@string/account_holder"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -51,7 +63,13 @@
             app:iconSpaceReserved="false" />
         <EditTextPreference
             app:key="profile3_name"
-            app:title="@string/account_name"
+            app:defaultValue="@string/profile_3"
+            app:title="@string/profile_name"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="profile3_holder"
+            app:title="@string/account_holder"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
