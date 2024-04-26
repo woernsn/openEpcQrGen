@@ -64,7 +64,7 @@ class EPCData(
             appendLine(refOfInvoice)
             appendLine(text)
             append(information)
-        }.toString()
+        }
     }
 }
 

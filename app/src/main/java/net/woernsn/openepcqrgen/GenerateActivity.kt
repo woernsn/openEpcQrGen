@@ -82,7 +82,7 @@ class GenerateActivity : AppCompatActivity() {
 
         val textInput = findViewById<TextInputLayout>(R.id.textInput)
         val amountInput = findViewById<TextInputLayout>(R.id.amountInput)
-        val profileRadioGroup = findViewById<RadioGroup>(R.id.radioGroup).setOnCheckedChangeListener { _, _ ->
+        findViewById<RadioGroup>(R.id.radioGroup).setOnCheckedChangeListener { _, _ ->
             imageViewQrCode.visibility = View.INVISIBLE
             textInput.editText!!.text.clear()
             amountInput.editText!!.text.clear()
@@ -154,7 +154,6 @@ class GenerateActivity : AppCompatActivity() {
             findViewById(R.id.radio_profile3),
         )
 
-        val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
         val defaultProfileButton = profileButtons[0]
 
         for (profileNumber in 1 .. 3) {
